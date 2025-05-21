@@ -336,7 +336,9 @@ let ppcgen_make_empty_write_events
   let write_size =
     if store_multiple && (size mod 4 = 0) && aligned addr' 4 then 4
     else if List.elem size [1; 2; 4; 8] && aligned addr' size then size
-    else if (size=16 && aligned addr' 8) then 8
+    else if (size = 16 && aligned addr' 8) then 8
+    else if (size = 8 && aligned addr' 4) then 4
+    else if (size = 4 && aligned addr' 2) then 2
     else 1
   in
   make_empty_write_events' id_state tid ioid addr size write_size write_kind
@@ -356,6 +358,8 @@ let ppcgen_make_read_request_events
     if load_multiple && (size mod 4 = 0) && aligned addr' 4 then 4
     else if List.elem size [1; 2; 4; 8] && aligned addr' size then size
     else if (size = 16 && aligned addr' 8) then 8
+    else if (size = 8 && aligned addr' 4) then 4
+    else if (size = 4 && aligned addr' 2) then 2
     else 1
   in
   make_read_request_events' id_state tid ioid addr size read_size read_kind
